@@ -17,17 +17,20 @@ class TaskController extends Controller
 
     public function index()
     {
-        $tasks = Task::get();
+        $tasks = auth()->user()->tasks()->get();
         return response()->json(TaskResource::collection($tasks));
     }
 
     public function show(Task $task)
     {
+        $this->authorize('view', $task);
+
         return response()->json(new TaskResource($task));
     }
 
     public function store(TaskRequest $request)
     {
+
         $data = $request->validated();
         $task = Task::create($data);
 
@@ -36,6 +39,8 @@ class TaskController extends Controller
 
     public function update(Task $task, TaskRequest $request)
     {
+        $this->authorize('update', $task);
+
         $data =  $request->validated();
         $task->fill($data);
         $task->save();
@@ -45,6 +50,8 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        $this->authorize('destroy', $task);
+
         $task->delete();
 
         return response()->json(['success' => true, 'msg' => 'Registro deletado com sucesso.']);

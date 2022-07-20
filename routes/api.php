@@ -33,7 +33,6 @@ Route::prefix('users')->group(function () {
     Route::put('/update/{userId}', [Usercontroller::class, 'update'])->middleware(['auth:sanctum']);
 });
 
-
 //todos
 Route::middleware(['auth:sanctum'])->prefix('todos')->group(function () {
     Route::get('', [TodoController::class, 'index']);
@@ -45,7 +44,7 @@ Route::middleware(['auth:sanctum'])->prefix('todos')->group(function () {
 });
 
 //tasks
-Route::prefix('tasks')->group(function () {
+Route::middleware(['auth:sanctum'])->prefix('tasks')->group(function () {
     Route::get('', [TaskController::class, 'index']);
     Route::get('{task}', [TaskController::class, 'show']);
     Route::post('', [TaskController::class, 'store']);

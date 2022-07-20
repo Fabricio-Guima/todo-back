@@ -38,7 +38,6 @@ class Usercontroller extends Controller
 
         $user = User::where('email', $data['email'])->first();
 
-
         //nao deixo mudar de email
         if ($LoggedUser->id !== optional($user)->id) {
 
@@ -51,7 +50,6 @@ class Usercontroller extends Controller
 
         $userId->fill($data);
         $userId->save();
-
 
         return new UserResource($userId);
     }

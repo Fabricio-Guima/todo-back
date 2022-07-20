@@ -13,11 +13,7 @@ class Task extends Model
 
     use HasFactory;
 
-    //relationships
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    //relationships  
 
     public function todo()
     {
