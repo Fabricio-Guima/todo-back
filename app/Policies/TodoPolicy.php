@@ -20,6 +20,14 @@ class TodoPolicy
         //
     }
 
+    //super admin com acesso a tudo
+    // public function before(User $user)
+    // {
+    //     if (($user->isSuperAdmin())) {
+    //         return true;
+    //     }
+    // }
+
     //index e show
     public function view(User $user, Todo $todo)
     {

@@ -52,4 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(Task::class, Todo::class);
     }
+
+    //user é super-admin?
+    public function isSuperAdmin()
+    {   //token do user que vem do authorization tem o email e verifico o email    
+        return in_array($this->email, config('acl.admins'));
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\{AdminTaskController, AdminTodoController};
 use App\Http\Controllers\Api\{TaskController, TodoController, Usercontroller};
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -43,6 +44,16 @@ Route::middleware(['auth:sanctum'])->prefix('todos')->group(function () {
     Route::post('{todo}/tasks', [TodoController::class, 'addTask']);
 });
 
+//todos admin
+Route::middleware(['auth:sanctum', 'can:isSuperAdmin'])->prefix('admin/todos')->group(function () {
+    Route::get('', [AdminTodoController::class, 'indexAdmin']);
+    Route::get('{todo}', [AdminTodoController::class, 'showAdmin']);
+    Route::post('', [AdminTodoController::class, 'storeAdmin']);
+    Route::put('{todo}', [AdminTodoController::class, 'updateAdmin']);
+    Route::delete('{todo}', [AdminTodoController::class, 'destroyAdmin']);
+    Route::post('{todo}/tasks', [AdminTodoController::class, 'addTaskAdmin']);
+});
+
 //tasks
 Route::middleware(['auth:sanctum'])->prefix('tasks')->group(function () {
     Route::get('', [TaskController::class, 'index']);
@@ -50,4 +61,13 @@ Route::middleware(['auth:sanctum'])->prefix('tasks')->group(function () {
     Route::post('', [TaskController::class, 'store']);
     Route::put('{task}', [TaskController::class, 'update']);
     Route::delete('{task}', [TaskController::class, 'destroy']);
+});
+
+//tasks admin
+Route::middleware(['auth:sanctum', 'can:isSuperAdmin'])->prefix('admin/tasks')->group(function () {
+    Route::get('', [AdminTaskController::class, 'indexAdmin']);
+    Route::get('{task}', [AdminTaskController::class, 'showAdmin']);
+    Route::post('', [AdminTaskController::class, 'storeAdmin']);
+    Route::put('{task}', [AdminTaskController::class, 'updateAdmin']);
+    Route::delete('{task}', [AdminTaskController::class, 'destroyAdmin']);
 });

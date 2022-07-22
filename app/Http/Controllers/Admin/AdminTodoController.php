@@ -1,37 +1,33 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskRequest;
 use App\Http\Requests\TodoRequest;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\TodoResource;
-use App\Models\Task;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class TodoController extends Controller
+class AdminTodoController extends Controller
 {
-
     public function __construct()
     {
     }
-
-    public function index()
+    //só admin
+    public function indexAdmin()
     {
-        return TodoResource::collection(auth()->user()->todos()->paginate(9));
+        return TodoResource::collection(Todo::paginate(9));
     }
 
-    public function show(Todo $todo)
+    public function showAdmin(Todo $todo)
     {
-        $this->authorize('view', $todo);
-
         return response()->json(new TodoResource($todo));
     }
 
-    public function store(TodoRequest $request)
+    public function storeAdmin(TodoRequest $request)
     {
         // $user = $request->user();
 
@@ -41,16 +37,15 @@ class TodoController extends Controller
         return response()->json(new TodoResource($todo));
     }
 
-    public function update(Todo $todo, TodoRequest $request)
+    public function updateAdmin(Todo $todo, TodoRequest $request)
     {
-        $this->authorize('update', $todo);
 
         if (!empty($todo->done)) {
             throw ValidationException::withMessages(['msg' => 'Não é possível atualizar os dados informados.']);
         }
 
         $data =  $request->validated();
-        $data["user_id"] = auth()->user()->id;
+        $data["user_id"] = $todo->user_id;
         $todo->fill($data);
         $todo->save();
 
@@ -58,23 +53,20 @@ class TodoController extends Controller
         return response()->json(new TodoResource($todo));
     }
 
-    public function destroy(Todo $todo)
+
+    public function addTaskAdmin(Todo $todo, TaskRequest $request)
     {
-        $this->authorize('destroy', $todo);
-
-        $todo->delete();
-
-        return response()->json(['success' => true, 'msg' => 'Registro deletado com sucesso.']);
-    }
-
-    public function addTask(Todo $todo, TaskRequest $request)
-    {
-        $this->authorize('addTask', $todo);
-
         $data = $request->all();
         $data["user_id"] = auth()->user()->id;
         $task = $todo->tasks()->create($data);
 
         return response()->json(new TaskResource($task));
+    }
+
+    public function destroyAdmin(Todo $todo)
+    {
+        $todo->delete();
+
+        return response()->json(['success' => true, 'msg' => 'Registro deletado com sucesso.']);
     }
 }
