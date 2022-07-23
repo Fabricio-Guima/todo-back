@@ -34,15 +34,14 @@ class AuthController extends Controller
 
         $token = $user->createToken($request->device_name)->plainTextToken;
 
-        return response()->json([
-            'token' => $token
-        ]);
+        UserResource::withoutWrapping();
+        return (new UserResource($user))->additional(['token' => $token]);
     }
 
     public function me()
     {
         $user = auth()->user();
-        UserResource::withoutWrapping();
+
         return new UserResource($user);
     }
 
