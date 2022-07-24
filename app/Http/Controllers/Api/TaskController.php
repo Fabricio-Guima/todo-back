@@ -8,6 +8,7 @@ use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class TaskController extends Controller
 {
@@ -41,7 +42,12 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
 
+        if ($task->done) {
+            throw ValidationException::withMessages(['msg' => 'Não é possível atualizar uma tarefa já concluída.']);
+        }
+
         $data =  $request->validated();
+        $data["user_id"] = auth()->user()->id;
         $task->fill($data);
         $task->save();
 

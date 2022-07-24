@@ -36,10 +36,11 @@ Route::prefix('users')->group(function () {
 
 //todos
 Route::middleware(['auth:sanctum'])->prefix('todos')->group(function () {
+    Route::put('{todo}', [TodoController::class, 'update']);
     Route::get('', [TodoController::class, 'index']);
     Route::get('{todo}', [TodoController::class, 'show']);
+    Route::get('{todo}/tasks', [TodoController::class, 'getAllTasksFromTodo']);
     Route::post('', [TodoController::class, 'store']);
-    Route::put('{todo}', [TodoController::class, 'update']);
     Route::delete('{todo}', [TodoController::class, 'destroy']);
     Route::post('{todo}/tasks', [TodoController::class, 'addTask']);
 });

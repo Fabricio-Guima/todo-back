@@ -28,7 +28,14 @@ class TodoController extends Controller
     {
         $this->authorize('view', $todo);
 
-        return response()->json(new TodoResource($todo));
+        return new TodoResource($todo);
+    }
+
+    public function getAllTasksFromTodo(Todo $todo)
+    {
+        $this->authorize('view', $todo);
+
+        return TodoResource::collection($todo->tasks()->paginate(9));
     }
 
     public function store(TodoRequest $request)
@@ -45,17 +52,17 @@ class TodoController extends Controller
     {
         $this->authorize('update', $todo);
 
-        if (!empty($todo->done)) {
+        if (isset($todo->done)) {
             throw ValidationException::withMessages(['msg' => 'Não é possível atualizar os dados informados.']);
         }
 
-        $data =  $request->validated();
+        $data = $request->validated();
         $data["user_id"] = auth()->user()->id;
         $todo->fill($data);
         $todo->save();
 
 
-        return response()->json(new TodoResource($todo));
+        return response()->json(new TodoResource($todo->fresh()));
     }
 
     public function destroy(Todo $todo)
