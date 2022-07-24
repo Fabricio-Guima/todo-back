@@ -19,4 +19,9 @@ class Task extends Model
     {
         return $this->belongsTo(Todo::class);
     }
+
+    public function user()
+    {
+        return $this->hasManyThrough(User::class, Todo::class);
+    }
 }

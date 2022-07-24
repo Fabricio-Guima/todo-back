@@ -51,7 +51,7 @@ class TaskController extends Controller
         $task->fill($data);
         $task->save();
 
-        return response()->json(new TaskResource($task->fresh()));
+        return new TaskResource($task->fresh());
     }
 
     public function destroy(Task $task)

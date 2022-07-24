@@ -16,7 +16,7 @@ class AdminTaskController extends Controller
 
     public function indexAdmin()
     {
-        return TaskResource::collection(Task::paginate(9));
+        return TaskResource::collection(Task::with('todo.user')->paginate(9));
     }
 
     public function showAdmin(Task $task)
